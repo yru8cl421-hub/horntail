@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龍王副本攻略</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #0d1b4b;
+  --dark: #070c1e;
+  --gold: #c8a44a;
+  --gold-light: #f0cc6a;
+}
+body {
+  background: #070c1e;
+  color: white;
+  font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+.page-header {
+  background: linear-gradient(135deg, #0a1238, #1a0830);
+  border-bottom: 2px solid var(--gold);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-title {
+  font-size: 28px;
+  color: var(--gold-light);
+  letter-spacing: 6px;
+  text-shadow: 0 0 20px rgba(200,164,74,0.7);
+}
+.header-hint { font-size: 12px; color: #8899cc; margin-top: 2px; }
+.header-btn {
+  background: linear-gradient(135deg, #c8a44a, #f0cc6a);
+  color: #1a0830;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: opacity 0.2s;
+}
+.header-btn:hover { opacity: 0.85; }
+
+/* ===== MAIN LAYOUT ===== */
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 16px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+
+/* ===== BOSS STAGE ===== */
+.boss-stage {
+  position: relative;
+  border-radius: 10px;
+  border: 2px solid #253870;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: url('1.webp') center/cover no-repeat #0a0a20;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.boss-stage.drag-over {
+  border-color: var(--gold);
+  box-shadow: 0 0 30px rgba(200,164,74,0.25);
+}
+.stage-hint {
+  position: absolute; bottom: 8px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px; color: rgba(120,140,200,0.55);
+  z-index: 10; white-space: nowrap; pointer-events: none;
+}
+.stage-controls {
+  position: absolute; top: 10px; right: 10px;
+  z-index: 20; display: flex; gap: 6px;
+}
+.stage-btn {
+  background: rgba(13,27,75,0.85);
+  border: 1px solid #4a6aaa;
+  color: #aabbee; padding: 5px 10px;
+  border-radius: 5px; font-size: 11px;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.2s;
+}
+.stage-btn:hover { background: rgba(30,50,120,0.9); color: white; }
+.map-btn.active  { background: rgba(200,164,74,0.25); border-color: var(--gold); color: var(--gold-light); }
+
+
+/* ===== DROPPED TOKENS ===== */
+.dropped-token {
+  position: absolute; z-index: 20; cursor: move; user-select: none;
+}
+.token-body {
+  background: rgba(10,20,60,0.92);
+  border: 2px solid var(--gold);
+  border-radius: 8px; padding: 4px 9px;
+  text-align: center; white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.7);
+  min-width: 60px;
+}
+.token-class { font-size: 10px; color: #99aadd; }
+.token-name  { font-size: 13px; font-weight: bold; }
+.token-close {
+  position: absolute; top: -7px; right: -7px;
+  width: 17px; height: 17px; border-radius: 50%;
+  background: #cc2222; border: none; color: white;
+  font-size: 10px; cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+
+
+/* ===== CHAR MANAGEMENT ===== */
+.char-mgr {
+  background: rgba(13,27,75,0.65);
+  border: 1px solid #253870;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+.char-mgr-title {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.char-add-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.char-inp {
+  background: rgba(7,12,30,0.8);
+  border: 1px solid #2a3a6e;
+  border-radius: 5px;
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 5px 10px;
+  width: 130px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.char-inp:focus { border-color: var(--gold); }
+.char-sel {
+  background: rgba(7,12,30,0.8);
+  border: 1px solid #2a3a6e;
+  border-radius: 5px;
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 5px 8px;
+  outline: none;
+  cursor: pointer;
+}
+.char-add-btn {
+  background: linear-gradient(135deg,#1a3a6a,#2a5aaa);
+  border: 1px solid #4a7aee;
+  color: #aaccff;
+  padding: 5px 14px;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.char-add-btn:hover { background: linear-gradient(135deg,#2a4a8a,#3a6acc); color: white; }
+.char-mgr-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.char-list-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(7,12,30,0.6);
+  border: 1px solid #2a3a6e;
+  border-radius: 16px;
+  padding: 3px 6px 3px 10px;
+  font-size: 12px;
+}
+.char-list-name { font-weight: bold; color: #ddeeff; }
+.char-list-cls  { color: var(--gold); font-size: 13px; font-weight: bold; }
+.char-list-team { color: #445566; font-size: 10px; }
+.char-list-del {
+  background: rgba(160,30,30,0.7);
+  border: none; color: white;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  font-size: 11px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.char-list-del:hover { background: #cc2222; }
+
+/* placeholder card for chars without image */
+.cc-placeholder {
+  width: 116px; height: 100px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.cc-initials {
+  font-size: 16px; font-weight: 900;
+  color: var(--gold-light);
+  text-shadow: 0 0 12px rgba(240,204,106,0.6);
+  text-align: center;
+  word-break: break-all;
+  padding: 0 6px;
+  line-height: 1.3;
+}
+.cc-job-badge {
+  font-size: 14px; font-weight: bold; color: #99aadd; margin-top: 6px;
+  background: rgba(10,20,60,0.8);
+  padding: 2px 10px; border-radius: 8px;
+}
+
+/* ===== JOB PANEL (deprecated, kept for compat) ===== */
+.job-panel {
+  background: rgba(13,27,75,0.65);
+  border: 1px solid #253870;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+.job-panel-title {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.job-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+  min-height: 28px;
+}
+.job-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.job-tag {
+  padding: 3px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.job-fixed {
+  background: rgba(200,164,74,0.18);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+}
+.job-custom {
+  background: rgba(80,120,220,0.18);
+  border: 1px solid #4a6aaa;
+  color: #aabbee;
+}
+.job-lock {
+  font-size: 11px;
+  opacity: 0.55;
+}
+.job-del {
+  background: rgba(180,30,30,0.7);
+  border: none;
+  color: white;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  font-size: 11px;
+  cursor: pointer;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  transition: background 0.15s;
+}
+.job-del:hover { background: #cc2222; }
+.job-add-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.job-inp {
+  background: rgba(7,12,30,0.8);
+  border: 1px solid #2a3a6e;
+  border-radius: 5px;
+  color: white;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 5px 10px;
+  width: 160px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.job-inp:focus { border-color: var(--gold); }
+.job-add-btn {
+  background: linear-gradient(135deg,#1a3a6a,#2a5aaa);
+  border: 1px solid #4a7aee;
+  color: #aaccff;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.job-add-btn:hover { background: linear-gradient(135deg,#2a4a8a,#3a6acc); color: white; }
+
+/* token class selector */
+.token-cls-sel {
+  background: rgba(10,20,60,0.0);
+  border: none;
+  color: #99aadd;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: center;
+}
+.token-cls-sel option { background: #0d1b4b; color: white; }
+
+/* ===== SAVE PANEL ===== */
+.save-panel {
+  background: rgba(13,27,75,0.65);
+  border: 1px solid #253870;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+.save-panel-title {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.save-slots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.save-slot {
+  background: rgba(7,12,30,0.65);
+  border: 1px solid #2a3a6e;
+  border-radius: 8px;
+  padding: 9px 12px;
+  flex: 1;
+  min-width: 130px;
+}
+.slot-name {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.slot-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #2a3050;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.slot-dot.has-save {
+  background: #44cc66;
+  box-shadow: 0 0 6px rgba(68,204,102,0.8);
+}
+.slot-actions { display: flex; gap: 6px; }
+.slot-btn {
+  flex: 1;
+  padding: 5px 4px;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  border: 1px solid;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.slot-save {
+  background: rgba(13,27,75,0.8);
+  border-color: #4a6aaa;
+  color: #aabbee;
+}
+.slot-save:hover { background: rgba(30,50,130,0.95); color: white; }
+.slot-load {
+  background: rgba(10,40,20,0.8);
+  border-color: #2a6a3a;
+  color: #88ee99;
+}
+.slot-load:hover:not(:disabled) { background: rgba(20,80,40,0.95); color: white; }
+.slot-load:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ===== STAGE AREA (底圖 + 左右隊伍) ===== */
+.stage-area {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.boss-stage-wrap {
+  flex: 1;
+  min-width: 0;
+}
+.side-team {
+  width: 128px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+.side-team .team-label {
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 6px 8px;
+}
+
+/* ===== ROSTER ===== */
+.team-label {
+  background: var(--navy); color: var(--gold);
+  padding: 7px 16px; font-size: 15px;
+  font-weight: bold; letter-spacing: 3px;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #253870; border-bottom: none;
+}
+.char-row {
+  display: flex; gap: 8px; padding: 8px;
+  background: rgba(13,27,75,0.45);
+  border: 1px solid #253870;
+  border-radius: 0 0 8px 8px;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  min-height: 80px;
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2, #253870) transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.char-row.team-drag-over {
+  background: rgba(30,90,50,0.35);
+  border-color: var(--gold);
+  box-shadow: inset 0 0 20px rgba(200,164,74,0.12);
+}
+.char-card { width: 112px; }
+
+/* ===== CHARACTER CARD ===== */
+@keyframes bob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+@keyframes shimmer {
+  0%,100% { box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+  50%      { box-shadow: 0 6px 20px rgba(100,150,255,0.35); }
+}
+.char-card {
+  width: 116px; border-radius: 8px; overflow: hidden;
+  cursor: grab; flex-shrink: 0; user-select: none;
+  animation:
+    bob     var(--dur, 2s) ease-in-out infinite var(--del, 0s),
+    shimmer 3s ease-in-out infinite var(--del, 0s);
+  transition: transform 0.2s;
+}
+.char-card:hover  { transform: scale(1.1) translateY(-5px); z-index: 10; }
+.char-card:active { cursor: grabbing; }
+.char-card.is-dragging { opacity: 0.4; }
+.char-card.is-used {
+  opacity: 0.28;
+  filter: grayscale(80%);
+  cursor: not-allowed;
+  animation: none;
+  pointer-events: none;
+}
+
+.cc-body {
+  display: block;
+  overflow: hidden;
+}
+.cc-body img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="header-title">⚔ 龍王副本攻略 ⚔</div>
+    <div class="header-hint">拖曳角色到地圖安排分工 · 點擊 × 移除</div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- 底圖 + 左右隊伍 -->
+  <div class="stage-area">
+
+    <!-- 左：隊伍一 -->
+    <div class="side-team">
+      <div class="team-label">⚔ 隊伍一</div>
+      <div class="char-row" id="charRow1"></div>
+    </div>
+
+    <!-- 中：BOSS 地圖 -->
+    <div class="boss-stage-wrap">
+      <div class="boss-stage" id="bossStage"
+           ondragover="onDragOver(event)"
+           ondrop="onDrop(event)"
+           ondragleave="onDragLeave(event)">
+        <div class="stage-controls">
+          <button class="stage-btn map-btn active" id="mapBtn1" onclick="switchMap(1)">地圖一</button>
+          <button class="stage-btn map-btn"        id="mapBtn2" onclick="switchMap(2)">地圖二</button>
+          <button class="stage-btn" onclick="clearTokens()">清除地圖</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右：隊伍二 -->
+    <div class="side-team">
+      <div class="team-label">⚔ 隊伍二</div>
+      <div class="char-row" id="charRow2"></div>
+    </div>
+
+  </div>
+
+  <!-- 角色管理 -->
+  <div class="char-mgr">
+    <div class="char-mgr-title">👤 角色管理</div>
+    <div class="char-add-row">
+      <input  class="char-inp" id="charNameInput" type="text" placeholder="角色名稱" maxlength="12"
+              onkeydown="if(event.key==='Enter')addChar()">
+      <select class="char-sel" id="charJobSel"></select>
+      <select class="char-sel" id="charTeamSel">
+        <option value="1">隊伍一</option>
+        <option value="2">隊伍二</option>
+      </select>
+      <button class="char-add-btn" onclick="addChar()">＋ 新增角色</button>
+    </div>
+    <div class="char-mgr-list" id="charMgrList"></div>
+  </div>
+
+  <!-- 存檔管理 -->
+  <div class="save-panel">
+    <div class="save-panel-title">💾 存檔管理</div>
+
+    <!-- 地圖一：6 個階段存檔 -->
+    <div id="map1Saves" class="save-slots">
+      <div class="save-slot">
+        <div class="slot-name"><span class="slot-dot" id="dot-0"></span>尾巴死前</div>
+        <div class="slot-actions">
+          <button class="slot-btn slot-save" onclick="saveSlot(0)">💾 存檔</button>
+          <button class="slot-btn slot-load" id="load-0" onclick="loadSlot(0)" disabled>📂 載入</button>
+        </div>
+      </div>
+      <div class="save-slot">
+        <div class="slot-name"><span class="slot-dot" id="dot-1"></span>尾巴死後</div>
+        <div class="slot-actions">
+          <button class="slot-btn slot-save" onclick="saveSlot(1)">💾 存檔</button>
+          <button class="slot-btn slot-load" id="load-1" onclick="loadSlot(1)" disabled>📂 載入</button>
+        </div>
+      </div>
+      <div class="save-slot">
+        <div class="slot-name"><span class="slot-dot" id="dot-2"></span>左手死後</div>
+        <div class="slot-actions">
+          <button class="slot-btn slot-save" onclick="saveSlot(2)">💾 存檔</button>
+          <button class="slot-btn slot-load" id="load-2" onclick="loadSlot(2)" disabled>📂 載入</button>
+        </div>
+      </div>
+      <div class="save-slot">
+        <div class="slot-name"><span class="slot-dot" id="dot-3"></span>右手死後</div>
+        <div class="slot-actions">
+          <button class="slot-btn slot-save" onclick="saveSlot(3)">💾 存檔</button>
+          <button class="slot-btn slot-load" id="load-3" onclick="loadSlot(3)" disabled>📂 載入</button>
+        </div>
+      </div>
+      <div class="save-slot">
+        <div class="slot-name"><span class="slot-dot" id="dot-4"></span>左頭死後</div>
+        <div class="slot-actions">
+          <button class="slot-btn slot-save" onclick="saveSlot(4)">💾 存檔</button>
+          <button class="slot-btn slot-load" id="load-4" onclick="loadSlot(4)" disabled>📂 載入</button>
+        </div>
+      </div>
+      <div class="save-slot">
+        <div class="slot-name"><span class="slot-dot" id="dot-5"></span>右頭死後</div>
+        <div class="slot-actions">
+          <button class="slot-btn slot-save" onclick="saveSlot(5)">💾 存檔</button>
+          <button class="slot-btn slot-load" id="load-5" onclick="loadSlot(5)" disabled>📂 載入</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 地圖二：單一存檔 -->
+    <div id="map2Saves" class="save-slots" style="display:none">
+      <div class="save-slot">
+        <div class="slot-name"><span class="slot-dot" id="dot-m2"></span>地圖二配置</div>
+        <div class="slot-actions">
+          <button class="slot-btn slot-save" onclick="saveMap2()">💾 存檔</button>
+          <button class="slot-btn slot-load" id="load-m2" onclick="loadMap2()" disabled>📂 載入</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<script>
+// ===== 固定職業清單 =====
+const ALL_JOBS = ['英雄','聖騎士','黑騎士','冰雷','火毒','主教','刀賊','鏢賊','拳霸','槍手','弩弓手','箭神'];
+
+// ===== 地圖切換 =====
+var currentMap = 1;
+var MAP_IMAGES = { 1: '1.webp', 2: '2.png' };
+
+function switchMap(n) {
+  if (currentMap === n) return;
+  clearTokens();
+  currentMap = n;
+  document.getElementById('bossStage').style.backgroundImage = "url('" + MAP_IMAGES[n] + "')";
+  document.getElementById('mapBtn1').classList.toggle('active', n === 1);
+  document.getElementById('mapBtn2').classList.toggle('active', n === 2);
+  document.getElementById('map1Saves').style.display = n === 1 ? '' : 'none';
+  document.getElementById('map2Saves').style.display = n === 2 ? '' : 'none';
+}
+
+// ===== 地圖二存讀檔 =====
+var MAP2_KEY = 'dragonKing_map2';
+
+function saveMap2() {
+  var stage = document.getElementById('bossStage');
+  var rect  = stage.getBoundingClientRect();
+  var tokens = [];
+  document.querySelectorAll('.dropped-token').forEach(function(t) {
+    var sel = t.querySelector('.token-cls-sel');
+    tokens.push({
+      name: t.dataset.for,
+      cls:  sel ? sel.value : '',
+      lp:   parseFloat(t.style.left) / rect.width  * 100,
+      tp:   parseFloat(t.style.top)  / rect.height * 100
+    });
+  });
+  localStorage.setItem(MAP2_KEY, JSON.stringify(tokens));
+  updateMap2UI();
+  var btn = document.querySelector('#map2Saves .slot-save');
+  if (btn) { var o = btn.textContent; btn.textContent = '✅ 已存'; setTimeout(function(){ btn.textContent = o; }, 1200); }
+}
+
+function loadMap2() {
+  var raw = localStorage.getItem(MAP2_KEY);
+  if (!raw) return;
+  clearTokens();
+  var stage = document.getElementById('bossStage');
+  var rect  = stage.getBoundingClientRect();
+  JSON.parse(raw).forEach(function(t) {
+    var card = document.querySelector('.char-card[data-name="' + t.name + '"]');
+    if (card) card.classList.add('is-used');
+    var token = document.createElement('div');
+    token.className = 'dropped-token';
+    token.dataset.for = t.name;
+    token.style.left  = (t.lp / 100 * rect.width)  + 'px';
+    token.style.top   = (t.tp / 100 * rect.height) + 'px';
+    token.innerHTML   = makeTokenHTML(t.cls, t.name);
+    makeDraggable(token, stage);
+    stage.appendChild(token);
+  });
+}
+
+function updateMap2UI() {
+  var has  = localStorage.getItem(MAP2_KEY) !== null;
+  var dot  = document.getElementById('dot-m2');
+  var load = document.getElementById('load-m2');
+  if (dot)  dot.classList.toggle('has-save', has);
+  if (load) load.disabled = !has;
+}
+
+// ===== 角色管理 =====
+const CHAR_KEY = 'dragonKing_chars_v2';  // 新 key，清空舊預設角色
+
+function loadChars() {
+  try {
+    var saved = JSON.parse(localStorage.getItem(CHAR_KEY));
+    if (Array.isArray(saved)) return saved;
+  } catch(e) {}
+  return [];
+}
+function persistChars() {
+  localStorage.setItem(CHAR_KEY, JSON.stringify(charList));
+}
+
+var charList = loadChars();
+
+function setTeamRowHandlers(row, team) {
+  row.dataset.team = team;
+  row.setAttribute('ondragover',  'onTeamDragOver(event)');
+  row.setAttribute('ondragleave', 'onTeamDragLeave(event)');
+  row.setAttribute('ondrop',      'onTeamDrop(event)');
+}
+
+function renderRoster() {
+  var row1 = document.getElementById('charRow1');
+  var row2 = document.getElementById('charRow2');
+  row1.innerHTML = '';
+  row2.innerHTML = '';
+  setTeamRowHandlers(row1, 1);
+  setTeamRowHandlers(row2, 2);
+  charList.forEach(function(c, idx) {
+    var row = c.team === 2 ? row2 : row1;
+    var delay = ((idx % 6) * 0.3).toFixed(1);
+    var dur   = (1.85 + (idx % 6) * 0.1).toFixed(2);
+    var card  = document.createElement('div');
+    card.className = 'char-card';
+    card.draggable = true;
+    card.dataset.name = c.name;
+    card.dataset.cls  = c.cls;
+    card.style.cssText = '--del:' + delay + 's;--dur:' + dur + 's';
+    card.setAttribute('ondragstart', 'onDragStart(event)');
+    var hue = Array.from(c.name).reduce(function(h,ch){ return h + ch.charCodeAt(0); }, 0) % 360;
+    card.innerHTML =
+      '<div class="cc-body cc-placeholder" style="background:linear-gradient(135deg,hsl(' + hue + ',40%,18%),hsl(' + hue + ',50%,10%))">' +
+        '<div class="cc-initials">' + c.name + '</div>' +
+        '<div class="cc-job-badge">' + c.cls + '</div>' +
+      '</div>';
+    row.appendChild(card);
+  });
+  renderCharMgrList();
+}
+
+function renderCharMgrList() {
+  var el = document.getElementById('charMgrList');
+  if (!el) return;
+  el.innerHTML = '';
+  charList.forEach(function(c) {
+    var item = document.createElement('div');
+    item.className = 'char-list-item';
+    item.innerHTML =
+      '<span class="char-list-name">' + c.name + '</span>' +
+      '<span class="char-list-cls">' + c.cls + '</span>' +
+      '<span class="char-list-team">T' + c.team + '</span>' +
+      '<button class="char-list-del" onclick="deleteChar(\'' + c.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\')">×</button>';
+    el.appendChild(item);
+  });
+}
+
+function addChar() {
+  var nameInput = document.getElementById('charNameInput');
+  var jobSel    = document.getElementById('charJobSel');
+  var teamSel   = document.getElementById('charTeamSel');
+  var name = nameInput.value.trim();
+  var cls  = jobSel.value;
+  var team = parseInt(teamSel.value) || 1;
+  if (!name || !cls) { nameInput.focus(); return; }
+  if (charList.some(function(c){ return c.name === name; })) {
+    nameInput.select(); return;
+  }
+  charList.push({ name: name, cls: cls, img: null, team: team });
+  persistChars();
+  renderRoster();
+  nameInput.value = '';
+  nameInput.focus();
+}
+
+function deleteChar(name) {
+  charList = charList.filter(function(c){ return c.name !== name; });
+  document.querySelectorAll('.dropped-token[data-for="' + name + '"]').forEach(function(t){ t.remove(); });
+  persistChars();
+  renderRoster();
+}
+
+// 初始化職業下拉
+(function initJobSel() {
+  var sel = document.getElementById('charJobSel');
+  if (!sel) return;
+  ALL_JOBS.forEach(function(j){
+    var opt = document.createElement('option');
+    opt.value = j; opt.textContent = j;
+    sel.appendChild(opt);
+  });
+})();
+
+// 初始化 token 中的職業選單
+function buildJobOptions(selected) {
+  return ALL_JOBS.map(function(j){
+    return '<option value="' + j + '"' + (j === selected ? ' selected' : '') + '>' + j + '</option>';
+  }).join('');
+}
+
+function makeTokenHTML(clsName, charName) {
+  return '<div class="token-body">' +
+           '<select class="token-cls-sel">' + buildJobOptions(clsName) + '</select>' +
+           '<div class="token-name">' + charName + '</div>' +
+         '</div>' +
+         '<button class="token-close" onclick="removeToken(this)">×</button>';
+}
+
+// ===== 隊伍間拖曳換隊 =====
+function onTeamDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  e.dataTransfer.dropEffect = 'copy';
+  e.currentTarget.classList.add('team-drag-over');
+}
+
+function onTeamDragLeave(e) {
+  if (!e.currentTarget.contains(e.relatedTarget))
+    e.currentTarget.classList.remove('team-drag-over');
+}
+
+function onTeamDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  var row = e.currentTarget;
+  row.classList.remove('team-drag-over');
+  var data;
+  try { data = JSON.parse(e.dataTransfer.getData('text/plain')); } catch(err) { return; }
+  var newTeam = parseInt(row.dataset.team);
+  var c = charList.find(function(x){ return x.name === data.name; });
+  if (!c || c.team === newTeam) return;
+  c.team = newTeam;
+  persistChars();
+  renderRoster();
+}
+
+// 初始化角色名單
+renderRoster();
+
+// ===== Drag from roster =====
+let dragging = null;
+function onDragStart(e) {
+  const card = e.currentTarget;
+  if (card.classList.contains('is-used')) { e.preventDefault(); return; }
+  dragging = card;
+  dragging.classList.add('is-dragging');
+  e.dataTransfer.effectAllowed = 'all';
+  e.dataTransfer.setData('text/plain', JSON.stringify({
+    name: dragging.dataset.name,
+    cls:  dragging.dataset.cls
+  }));
+}
+document.addEventListener('dragend', () => {
+  if (dragging) { dragging.classList.remove('is-dragging'); dragging = null; }
+});
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  document.getElementById('bossStage').classList.add('drag-over');
+}
+function onDragLeave(e) {
+  if (!e.currentTarget.contains(e.relatedTarget))
+    document.getElementById('bossStage').classList.remove('drag-over');
+}
+function onDrop(e) {
+  e.preventDefault();
+  const stage = document.getElementById('bossStage');
+  stage.classList.remove('drag-over');
+  let data;
+  try { data = JSON.parse(e.dataTransfer.getData('text/plain')); } catch { return; }
+
+  // 鎖定來源卡片
+  const card = document.querySelector('.char-card[data-name="' + data.name + '"]');
+  if (card) card.classList.add('is-used');
+
+  const rect = stage.getBoundingClientRect();
+  const token = document.createElement('div');
+  token.className = 'dropped-token';
+  token.dataset.for = data.name;
+  token.style.left = Math.max(0, e.clientX - rect.left - 34) + 'px';
+  token.style.top  = Math.max(0, e.clientY - rect.top  - 26) + 'px';
+  token.innerHTML = makeTokenHTML(data.cls, data.name);
+  makeDraggable(token, stage);
+  stage.appendChild(token);
+}
+
+function removeToken(btn) {
+  const token = btn.parentElement;
+  releaseCard(token.dataset.for);
+  token.remove();
+}
+
+function releaseCard(name) {
+  const card = document.querySelector('.char-card[data-name="' + name + '"]');
+  if (card) card.classList.remove('is-used');
+}
+
+function makeDraggable(el, container) {
+  var ox, oy;
+  el.querySelector('.token-body').addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    var r = el.getBoundingClientRect();
+    ox = e.clientX - r.left; oy = e.clientY - r.top;
+    function move(e2) {
+      var cr = container.getBoundingClientRect();
+      el.style.left = (e2.clientX - cr.left - ox) + 'px';
+      el.style.top  = (e2.clientY - cr.top  - oy) + 'px';
+    }
+    function up() {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    }
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  });
+}
+
+function clearTokens() {
+  document.querySelectorAll('.dropped-token').forEach(function(t) {
+    releaseCard(t.dataset.for);
+    t.remove();
+  });
+}
+
+// ===== Save / Load =====
+var PHASES = ['尾巴死前','尾巴死後','左手死後','右手死後','左頭死後','右頭死後'];
+var SAVE_KEY = 'dragonKing_slot_';
+
+function saveSlot(idx) {
+  var stage = document.getElementById('bossStage');
+  var rect  = stage.getBoundingClientRect();
+  var tokens = [];
+  document.querySelectorAll('.dropped-token').forEach(function(t) {
+    var sel = t.querySelector('.token-cls-sel');
+    tokens.push({
+      name: t.dataset.for,
+      cls:  sel ? sel.value : (t.querySelector('.token-class') || {}).textContent || '',
+      lp:   parseFloat(t.style.left) / rect.width  * 100,
+      tp:   parseFloat(t.style.top)  / rect.height * 100
+    });
+  });
+  localStorage.setItem(SAVE_KEY + idx, JSON.stringify({ phase: PHASES[idx], tokens: tokens }));
+  updateSlotUI(idx);
+
+  // 存檔成功閃爍提示
+  var btn = document.querySelectorAll('.slot-save')[idx];
+  var orig = btn.textContent;
+  btn.textContent = '✅ 已存';
+  setTimeout(function(){ btn.textContent = orig; }, 1200);
+}
+
+function loadSlot(idx) {
+  var raw = localStorage.getItem(SAVE_KEY + idx);
+  if (!raw) return;
+  var data = JSON.parse(raw);
+
+  clearTokens();
+
+  var stage = document.getElementById('bossStage');
+  var rect  = stage.getBoundingClientRect();
+
+  data.tokens.forEach(function(t) {
+    var card = document.querySelector('.char-card[data-name="' + t.name + '"]');
+    if (card) card.classList.add('is-used');
+
+    var token = document.createElement('div');
+    token.className   = 'dropped-token';
+    token.dataset.for = t.name;
+    token.style.left  = (t.lp / 100 * rect.width)  + 'px';
+    token.style.top   = (t.tp / 100 * rect.height) + 'px';
+    token.innerHTML = makeTokenHTML(t.cls, t.name);
+    makeDraggable(token, stage);
+    stage.appendChild(token);
+  });
+}
+
+function updateSlotUI(idx) {
+  var has  = localStorage.getItem(SAVE_KEY + idx) !== null;
+  var dot  = document.getElementById('dot-'  + idx);
+  var load = document.getElementById('load-' + idx);
+  if (dot)  dot.classList.toggle('has-save', has);
+  if (load) load.disabled = !has;
+}
+
+// 初始化所有存檔指示燈
+PHASES.forEach(function(_, i) { updateSlotUI(i); });
+updateMap2UI();
+
+</script>
+</body>
+</html>
