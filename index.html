@@ -56,9 +56,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 12px 16px;
-  max-width: 1440px;
-  margin: 0 auto;
+  padding: 12px 196px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 
@@ -212,7 +212,7 @@ body {
 
 /* placeholder card for chars without image */
 .cc-placeholder {
-  width: 116px; height: 100px;
+  width: 152px; height: 120px;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
 }
@@ -416,25 +416,29 @@ body {
 
 /* ===== STAGE AREA (底圖 + 左右隊伍) ===== */
 .stage-area {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
+  position: relative;
 }
 .boss-stage-wrap {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 .side-team {
-  width: 128px;
-  flex-shrink: 0;
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 184px;
   display: flex;
   flex-direction: column;
 }
+.stage-area > .side-team:first-child { left:  -192px; }
+.stage-area > .side-team:last-child  { right: -192px; }
 .side-team .team-label {
   text-align: center;
   font-size: 13px;
   letter-spacing: 1px;
   padding: 6px 8px;
+}
+.side-team .char-row {
+  flex: 1;
+  max-height: none;
 }
 
 /* ===== ROSTER ===== */
@@ -465,7 +469,7 @@ body {
   border-color: var(--gold);
   box-shadow: inset 0 0 20px rgba(200,164,74,0.12);
 }
-.char-card { width: 112px; }
+.char-card { width: 152px; }
 
 /* ===== CHARACTER CARD ===== */
 @keyframes bob {
@@ -477,7 +481,7 @@ body {
   50%      { box-shadow: 0 6px 20px rgba(100,150,255,0.35); }
 }
 .char-card {
-  width: 116px; border-radius: 8px; overflow: hidden;
+  width: 152px; border-radius: 8px; overflow: hidden;
   cursor: grab; flex-shrink: 0; user-select: none;
   animation:
     bob     var(--dur, 2s) ease-in-out infinite var(--del, 0s),
