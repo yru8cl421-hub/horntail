@@ -403,6 +403,7 @@ function renderRoster() {
     card.dataset.name=c.name; card.dataset.cls=c.cls;
     card.style.cssText='--del:'+delay+'s;--dur:'+dur+'s';
     card.setAttribute('ondragstart','onDragStart(event)');
+    if (document.querySelector('#mapContent .dropped-token[data-for="'+c.name+'"]')) card.classList.add('is-used');
     var hue=Array.from(c.name).reduce(function(h,ch){ return h+ch.charCodeAt(0); },0)%360;
     card.innerHTML='<div class="cc-body cc-placeholder" style="background:linear-gradient(135deg,hsl('+hue+',40%,18%),hsl('+hue+',50%,10%))">'+
       '<div class="cc-initials">'+escHtml(c.name)+'</div>'+
